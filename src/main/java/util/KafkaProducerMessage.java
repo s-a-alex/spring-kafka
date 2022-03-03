@@ -2,8 +2,6 @@ package util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -15,16 +13,16 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class KafkaProducerMessage {
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, ValueClass> kafkaTemplate;
 
     public void sendMessage(String message) {
 
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send("topic1", message);
+        ListenableFuture<SendResult<String, ValueClass>> future = kafkaTemplate.send("topic1", new ValueClass("value", message));
 
-        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+        future.addCallback(new ListenableFutureCallback<SendResult<String, ValueClass>>() {
 
             @Override
-            public void onSuccess(SendResult<String, String> result) {
+            public void onSuccess(SendResult<String, ValueClass> result) {
                 log.info("Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "]");
             }
             @Override

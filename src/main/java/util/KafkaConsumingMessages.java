@@ -17,17 +17,17 @@ public class KafkaConsumingMessages {
 
     @Setter
     @Getter
-    private CountDownLatch countDownLatch=new CountDownLatch(10);
+    private CountDownLatch countDownLatch=new CountDownLatch(20);
 
-    @KafkaListener(topics = "topic1", groupId = "kafkaTest")
-    public void listenGroup(String message) {
+    @KafkaListener(topics = "topic1", groupId = "kafkaTestListen", containerFactory = "kafkaListenerContainerFactory")
+    public void listen(ValueClass message) {
         log.info("Received Message in group kafkaTest: " + message);
         getCountDownLatch().countDown();
     }
 
-//    @KafkaListener(topics = "topic1", groupId = "kafkaTest")
-//    public void listenWithHeaders(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
-//        log.info("Received Message: " + message + " from partition: " + partition);
-//        getCountDownLatch().countDown();
-//    }
+    @KafkaListener(topics = "topic1", groupId = "kafkaTestListenWithHeaders", containerFactory = "kafkaListenerContainerFactory")
+    public void listenWithHeaders(@Payload ValueClass message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
+        log.info("Received Message: " + message + " from partition: " + partition);
+        getCountDownLatch().countDown();
+    }
 }
